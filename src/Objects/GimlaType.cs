@@ -5,6 +5,9 @@ public class GimlaType : IEquatable<GimlaType?>, IComparable<GimlaType>
     #region Members
     public int Code { get; set; }
     public string Description { get; set; } = null!;
+
+    [Browsable(false)]
+    public SortedSet<DocumentType> DocumentTypes { get; } = new();
     #endregion
 
     #region Methods
@@ -38,6 +41,16 @@ public class GimlaType : IEquatable<GimlaType?>, IComparable<GimlaType>
     {
         if (other is null) return 1;
         return Code.CompareTo(other.Code);
+    }
+
+    public SortedSet<GimlaToDocument> GetGimlaToDocuments()
+    {
+        var gimlaToDocuments = new SortedSet<GimlaToDocument>();
+        foreach (var docType in DocumentTypes)
+        {
+            gimlaToDocuments.Add(new GimlaToDocument { GimlaCode = Code, GimlaDescription = Description, DocType = docType.Code, DocDescription = docType.Description });
+        }
+        return gimlaToDocuments;
     }
     #endregion
 }

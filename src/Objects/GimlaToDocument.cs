@@ -1,17 +1,25 @@
 ﻿
+using System.ComponentModel;
+
 namespace XmlToExcel.Objects;
 
 public class GimlaToDocument : IEquatable<GimlaToDocument?>, IComparable<GimlaToDocument>
 {
     #region Members
+    [DisplayName("Gimla Code")]
     public int GimlaCode { get; set; }
+    [DisplayName("Gimla Description")]
+    public string GimlaDescription { get; set; } = null!;
+    [DisplayName("Doc Type")]
     public int DocType { get; set; }
+    [DisplayName("Doc Description")]
+    public string DocDescription { get; set; } = null!;
     #endregion
 
     #region Methods
     public override bool Equals(object? obj)
     {
-        return Equals(obj as GimlaToDocument);
+        return obj is GimlaToDocument other && Equals(other);
     }
 
     public bool Equals(GimlaToDocument? other)
