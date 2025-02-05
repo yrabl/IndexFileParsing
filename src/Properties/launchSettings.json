@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XmlToExcel": {
+      "commandName": "Project",
+      "commandLineArgs": "-DataPath=G:\\My Drive\\Development\\EranMor\\Data -ExcelFile=\"D:\\Temp\\Eran Mor Tests\\ADA Types.xlsx\""
+    }
+  }
+}
