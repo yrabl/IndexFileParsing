@@ -40,7 +40,7 @@ public class MainForm : Form
     /// </summary>
     public MainForm()
     {
-        globalResourceManager = new ResourceManager("XmlToExcel.Resources", typeof(MainForm).Assembly);
+        globalResourceManager = new ResourceManager("XmlToExcel.Properties.Resources", typeof(MainForm).Assembly);
         InitializeComponent();
         LoadSettings();
     }
