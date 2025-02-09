@@ -6,6 +6,9 @@ using System.Reflection.Emit;
 using Label = System.Windows.Forms.Label;
 using Application = System.Windows.Forms.Application;
 using OfficeOpenXml.Table;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
 
 
 namespace XmlToExcel;
@@ -15,62 +18,30 @@ namespace XmlToExcel;
 /// </summary>
 public class MainForm : Form
 {
-    private TextBox txtDataPath;
-    private TextBox txtExcelFile;
-    private Button btnBrowseDataPath;
-    private Button btnBrowseExcelFile;
-    private Button btnProcess;
-    private CheckBox chkDeleteFiles;
-    private CheckBox chkRenameFiles;
-    private ProgressBar progressBar;
-    private Label lblStatus;
     private readonly string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
     private ConfigData ConfigData = new ConfigData();
+    private Label lblDataPath;
+    private TextBox txtDataPath;
+    private Button btnBrowseDataPath;
+    private Label lblExcelFile;
+    private TextBox txtExcelFile;
+    private Button btnBrowseExcelFile;
+    private CheckBox chkDeleteFiles;
+    private CheckBox chkRenameFiles;
+    private Button btnProcess;
+    private ProgressBar progressBar;
     private TextBox txtLog;
+    private ComboBox cmbLanguage;
+    private Label lblStatus;
+    private ResourceManager globalResourceManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainForm"/> class.
     /// </summary>
     public MainForm()
     {
-        Text = "Ada XML to Excel Converter";
-        Width = 800;
-        Height = 600;
-        Icon = new Icon("YanivRabl.ico");
-
-        Label lblDataPath = new Label { Text = "Data Path:", Left = 10, Top = 20, Width = 80 };
-        txtDataPath = new TextBox { Left = 100, Top = 20, Width = 350 };
-        btnBrowseDataPath = new Button { Text = "Browse", Left = 460, Top = 18 };
-        btnBrowseDataPath.Click += (s, e) => BrowseFolder(txtDataPath);
-
-        Label lblExcelFile = new Label { Text = "Excel File:", Left = 10, Top = 60, Width = 80 };
-        txtExcelFile = new TextBox { Left = 100, Top = 60, Width = 350 };
-        btnBrowseExcelFile = new Button { Text = "Browse", Left = 460, Top = 58 };
-        btnBrowseExcelFile.Click += (s, e) => BrowseFile(txtExcelFile);
-
-        chkDeleteFiles = new CheckBox { Text = "Delete XML files after processing", Left = 100, Top = 100, Width = 250 };
-        chkRenameFiles = new CheckBox { Text = "Rename Files", Left = 100, Top = 130, Width = 250 };
-
-        btnProcess = new Button { Text = "Process", Left = 250, Top = 160 };
-        btnProcess.Click += (s, e) => ProcessXmlToExcel();
-
-        progressBar = new ProgressBar { Left = 100, Top = 200, Width = 460, Visible = false };
-        lblStatus = new Label { Left = 10, Top = 230, Width = 550 };
-        txtLog = new TextBox { Left = 10, Top = 250, Width = 760, Height = 200, Multiline = true, ScrollBars = ScrollBars.Vertical, ReadOnly = true };
-
-        Controls.Add(lblDataPath);
-        Controls.Add(txtDataPath);
-        Controls.Add(btnBrowseDataPath);
-        Controls.Add(lblExcelFile);
-        Controls.Add(txtExcelFile);
-        Controls.Add(btnBrowseExcelFile);
-        Controls.Add(chkDeleteFiles);
-        Controls.Add(chkRenameFiles);
-        Controls.Add(btnProcess);
-        Controls.Add(progressBar);
-        Controls.Add(lblStatus);
-        Controls.Add(txtLog);
-
+        globalResourceManager = new ResourceManager("XmlToExcel.Resources", typeof(MainForm).Assembly);
+        InitializeComponent();
         LoadSettings();
     }
 
@@ -139,8 +110,8 @@ public class MainForm : Form
             }
         }
         SaveSettings(true);
-        txtDataPath.Text = ConfigData.DataPath;
-        txtExcelFile.Text = ConfigData.ExcelFile;
+        txtDataPath.Text = ConfigData.DataPath ?? string.Empty;
+        txtExcelFile.Text = ConfigData.ExcelFile ?? string.Empty;
         chkDeleteFiles.Checked = ConfigData.DeleteFiles;
         chkRenameFiles.Checked = ConfigData.RenameFiles;
     }
@@ -164,7 +135,7 @@ public class MainForm : Form
     /// <param name="textBox">The text box to set the selected path.</param>
     private void BrowseFile(TextBox textBox)
     {
-        using (SaveFileDialog dialog = new SaveFileDialog { Filter = "Excel Files|*.xlsx" })
+        using (SaveFileDialog dialog = new SaveFileDialog { Filter = globalResourceManager.GetString("ExcelFileFilter") })
         {
             if (dialog.ShowDialog() == DialogResult.OK)
                 textBox.Text = dialog.FileName;
@@ -194,7 +165,7 @@ public class MainForm : Form
         SaveSettings(false);
 
         progressBar.Visible = true;
-        lblStatus.Text = "Processing...";
+        lblStatus.Text = globalResourceManager.GetString("lblStatus_Processing");
         ClearLog();
         Log("Processing started...");
         Application.DoEvents();
@@ -307,7 +278,7 @@ public class MainForm : Form
                 {
                     Log("Operation aborted. File was in use.");
                     progressBar.Visible = false;
-                    lblStatus.Text = "Operation aborted.";
+                    lblStatus.Text = globalResourceManager.GetString("lblStatus_Aborted");
                     return;
                 }
             }
@@ -325,7 +296,7 @@ public class MainForm : Form
                     {
                         Log("Operation aborted. File was in use.");
                         progressBar.Visible = false;
-                        lblStatus.Text = "Operation aborted.";
+                        lblStatus.Text = globalResourceManager.GetString("lblStatus_Aborted");
                         return;
                     }
                 }
@@ -333,7 +304,7 @@ public class MainForm : Form
         }
 
         progressBar.Visible = false;
-        lblStatus.Text = "Excel file created successfully!";
+        lblStatus.Text = globalResourceManager.GetString("lblStatus_Success");
     }
 
     /// <summary>
@@ -436,14 +407,169 @@ public class MainForm : Form
         Log($"Completed renaming {renamedFiles} files in folder: {folder}");
     }
 
+    private void InitializeComponent()
+    {
+        ComponentResourceManager resources = new ComponentResourceManager(typeof(MainForm));
+        lblDataPath = new Label();
+        txtDataPath = new TextBox();
+        btnBrowseDataPath = new Button();
+        lblExcelFile = new Label();
+        txtExcelFile = new TextBox();
+        btnBrowseExcelFile = new Button();
+        chkDeleteFiles = new CheckBox();
+        chkRenameFiles = new CheckBox();
+        btnProcess = new Button();
+        progressBar = new ProgressBar();
+        lblStatus = new Label();
+        txtLog = new TextBox();
+        cmbLanguage = new ComboBox();
+        SuspendLayout();
+        // 
+        // lblDataPath
+        // 
+        resources.ApplyResources(lblDataPath, "lblDataPath");
+        lblDataPath.Name = "lblDataPath";
+        // 
+        // txtDataPath
+        // 
+        resources.ApplyResources(txtDataPath, "txtDataPath");
+        txtDataPath.Name = "txtDataPath";
+        // 
+        // btnBrowseDataPath
+        // 
+        resources.ApplyResources(btnBrowseDataPath, "btnBrowseDataPath");
+        btnBrowseDataPath.Name = "btnBrowseDataPath";
+        btnBrowseDataPath.UseVisualStyleBackColor = true;
+        btnBrowseDataPath.Click += btnBrowseDataPath1_Click;
+        // 
+        // lblExcelFile
+        // 
+        resources.ApplyResources(lblExcelFile, "lblExcelFile");
+        lblExcelFile.Name = "lblExcelFile";
+        // 
+        // txtExcelFile
+        // 
+        resources.ApplyResources(txtExcelFile, "txtExcelFile");
+        txtExcelFile.Name = "txtExcelFile";
+        // 
+        // btnBrowseExcelFile
+        // 
+        resources.ApplyResources(btnBrowseExcelFile, "btnBrowseExcelFile");
+        btnBrowseExcelFile.Name = "btnBrowseExcelFile";
+        btnBrowseExcelFile.UseVisualStyleBackColor = true;
+        btnBrowseExcelFile.Click += btnBrowseExcelFile_Click;
+        // 
+        // chkDeleteFiles
+        // 
+        resources.ApplyResources(chkDeleteFiles, "chkDeleteFiles");
+        chkDeleteFiles.Name = "chkDeleteFiles";
+        chkDeleteFiles.UseVisualStyleBackColor = true;
+        // 
+        // chkRenameFiles
+        // 
+        resources.ApplyResources(chkRenameFiles, "chkRenameFiles");
+        chkRenameFiles.Name = "chkRenameFiles";
+        chkRenameFiles.UseVisualStyleBackColor = true;
+        // 
+        // btnProcess
+        // 
+        resources.ApplyResources(btnProcess, "btnProcess");
+        btnProcess.Name = "btnProcess";
+        btnProcess.UseVisualStyleBackColor = true;
+        btnProcess.Click += btnProcess_Click;
+        // 
+        // progressBar
+        // 
+        resources.ApplyResources(progressBar, "progressBar");
+        progressBar.Name = "progressBar";
+        // 
+        // lblStatus
+        // 
+        resources.ApplyResources(lblStatus, "lblStatus");
+        lblStatus.Name = "lblStatus";
+        // 
+        // txtLog
+        // 
+        resources.ApplyResources(txtLog, "txtLog");
+        txtLog.Name = "txtLog";
+        txtLog.ReadOnly = true;
+        // 
+        // cmbLanguage
+        // 
+        cmbLanguage.FormattingEnabled = true;
+        cmbLanguage.Items.AddRange(new object[] { resources.GetString("cmbLanguage.Items"), resources.GetString("cmbLanguage.Items1") });
+        resources.ApplyResources(cmbLanguage, "cmbLanguage");
+        cmbLanguage.Name = "cmbLanguage";
+        cmbLanguage.SelectedIndexChanged += cmbLanguage_SelectedIndexChanged;
+        // 
+        // MainForm
+        // 
+        resources.ApplyResources(this, "$this");
+        Controls.Add(cmbLanguage);
+        Controls.Add(txtLog);
+        Controls.Add(lblStatus);
+        Controls.Add(progressBar);
+        Controls.Add(btnProcess);
+        Controls.Add(chkRenameFiles);
+        Controls.Add(chkDeleteFiles);
+        Controls.Add(btnBrowseExcelFile);
+        Controls.Add(txtExcelFile);
+        Controls.Add(lblExcelFile);
+        Controls.Add(btnBrowseDataPath);
+        Controls.Add(txtDataPath);
+        Controls.Add(lblDataPath);
+        Name = "MainForm";
+        ResumeLayout(false);
+        PerformLayout();
+    }
+
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
     [STAThread]
     public static void Main()
     {
+        // Set the application language (Load from config or default)
+        string lang = Properties.Settings.Default.Language ?? "en";
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(lang);
+
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new MainForm());
     }
+
+    private void btnBrowseDataPath1_Click(object sender, EventArgs e)
+    {
+        BrowseFolder(txtDataPath);
+    }
+
+    private void btnBrowseExcelFile_Click(object sender, EventArgs e)
+    {
+        BrowseFile(txtExcelFile);
+    }
+
+    private void btnProcess_Click(object sender, EventArgs e)
+    {
+        ProcessXmlToExcel();
+    }
+
+    private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ChangeLanguage(cmbLanguage.SelectedItem.ToString());
+    }
+
+    private void ChangeLanguage(string lang)
+    {
+        string culture = lang switch
+        {
+            "English" => "en",
+            "עברית" => "he",
+            _ => "en"
+        };
+
+        Properties.Settings.Default.Language = culture;
+        Properties.Settings.Default.Save();
+        MessageBox.Show("Restart required to apply language changes.");
+    }
+
 }
