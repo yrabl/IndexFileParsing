@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace XmlToExcel.Util;
 
+/// <summary>
+/// Provides methods to manage the configuration file for the Ada XML to Excel Converter application.
+/// </summary>
 public static class ConfigManager
 {
     #region Members
@@ -15,7 +18,7 @@ public static class ConfigManager
 
     #region Methods
     /// <summary>
-    /// Ensures the configuration directory and file exist.
+    /// Ensures the configuration directory and file exist. If they do not exist, they are created.
     /// </summary>
     public static void EnsureConfigExists()
     {
@@ -31,8 +34,9 @@ public static class ConfigManager
     }
 
     /// <summary>
-    /// Reads the config.json file.
+    /// Reads the content of the config.json file.
     /// </summary>
+    /// <returns>A string containing the JSON content of the configuration file.</returns>
     public static string ReadConfig()
     {
         EnsureConfigExists();
@@ -40,8 +44,9 @@ public static class ConfigManager
     }
 
     /// <summary>
-    /// Writes data to config.json.
+    /// Writes the specified JSON data to the config.json file.
     /// </summary>
+    /// <param name="json">The JSON data to write to the configuration file.</param>
     public static void WriteConfig(string json)
     {
         EnsureConfigExists();

@@ -10,6 +10,7 @@ Ada XML to Excel Converter is a Windows Forms application that processes XML fil
 - Option to rename XML files based on their metadata.
 - Log messages to track the processing status.
 - Save and load settings from a configuration file.
+- **Multi-language support** (English and Hebrew).
 
 ## Requirements
 
@@ -19,14 +20,13 @@ Ada XML to Excel Converter is a Windows Forms application that processes XML fil
 
 ## Installation
 
-1. Clone the repository:
-    git clone https://github.com/your-repository.git
+1. Download the latest release from GitHub: [Latest Release](https://github.com/yrabl/IndexFileParsing/releases/latest)
 
-2. Open the solution in Visual Studio 2022.
+2. Extract the `Installer.zip` file.
 
-3. Restore the NuGet packages.
+3. Run `Installer.msi` to install the application.
 
-4. Build the solution.
+4. Follow the on-screen instructions to complete the installation.
 
 ## Usage
 
@@ -40,18 +40,32 @@ Ada XML to Excel Converter is a Windows Forms application that processes XML fil
 
 5. Check the "Rename Files" option if you want to rename the XML files based on their metadata.
 
-6. Click the "Process" button to start processing the XML files and generate the Excel file.
+6. Select the application language from the dropdown (English or Hebrew).
 
-7. The log messages will be displayed in the log text box to track the processing status.
+7. Click the "Process" button to start processing the XML files and generate the Excel file.
+
+8. The log messages will be displayed in the log text box to track the processing status.
 
 ## Configuration
 
-The application saves and loads settings from a configuration file named `config.json` located in the application's base directory. The configuration file contains the following settings:
+The application saves and loads settings from a configuration file named `config.json`, which is stored in `C:\ProgramData\AdaXmlToExcel\`. The configuration file contains the following settings:
 
 - `DataPath`: The path to the data files.
 - `ExcelFile`: The path to the Excel file.
 - `DeleteFiles`: A value indicating whether to delete files after processing.
 - `RenameFiles`: A value indicating whether to rename files after processing.
+
+
+The application ensures that the configuration directory and file exist before attempting to read or write settings. If the file does not exist, it is created with default values:
+
+```json
+{
+  "DataPath": "",
+  "ExcelFile": "",
+  "DeleteFiles": false,
+  "RenameFiles": false
+}
+```
 
 ## Contributing
 

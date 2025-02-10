@@ -534,26 +534,42 @@ public class MainForm : Form
         Application.Run(new MainForm());
     }
 
+    /// <summary>
+    /// Handles the click event for browsing the data path.
+    /// </summary>
     private void btnBrowseDataPath1_Click(object sender, EventArgs e)
     {
         BrowseFolder(txtDataPath);
     }
 
+    /// <summary>
+    /// Handles the click event for browsing the Excel file.
+    /// </summary>
     private void btnBrowseExcelFile_Click(object sender, EventArgs e)
     {
         BrowseFile(txtExcelFile);
     }
 
+    /// <summary>
+    /// Handles the click event for processing XML to Excel.
+    /// </summary>
     private void btnProcess_Click(object sender, EventArgs e)
     {
         ProcessXmlToExcel();
     }
 
+    /// <summary>
+    /// Handles the language selection change event.
+    /// </summary>
     private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
     {
         ChangeLanguage(cmbLanguage.SelectedItem.ToString());
     }
 
+    /// <summary>
+    /// Changes the application language and saves the setting.
+    /// </summary>
+    /// <param name="lang">The selected language.</param>
     private void ChangeLanguage(string lang)
     {
         string culture = lang switch
