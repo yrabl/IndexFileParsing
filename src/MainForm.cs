@@ -18,7 +18,6 @@ namespace XmlToExcel;
 /// </summary>
 public class MainForm : Form
 {
-    private readonly string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
     private ConfigData ConfigData = new ConfigData();
     private Label lblDataPath;
     private TextBox txtDataPath;
@@ -89,7 +88,7 @@ public class MainForm : Form
             ConfigData.DeleteFiles = chkDeleteFiles.Checked;
             ConfigData.RenameFiles = chkRenameFiles.Checked;
         }
-        File.WriteAllText(configFilePath, System.Text.Json.JsonSerializer.Serialize(ConfigData, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+        ConfigManager.WriteConfig(System.Text.Json.JsonSerializer.Serialize(ConfigData, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
     }
 
     /// <summary>
@@ -97,17 +96,14 @@ public class MainForm : Form
     /// </summary>
     private void LoadSettings()
     {
-        if (File.Exists(configFilePath))
+        var json = ConfigManager.ReadConfig();
+        var settings = System.Text.Json.JsonSerializer.Deserialize<ConfigData>(json);
+        if (settings != null)
         {
-            var json = File.ReadAllText(configFilePath);
-            var settings = System.Text.Json.JsonSerializer.Deserialize<ConfigData>(json);
-            if (settings != null)
-            {
-                ConfigData.DataPath = settings.DataPath;
-                ConfigData.ExcelFile = settings.ExcelFile;
-                ConfigData.DeleteFiles = settings.DeleteFiles;
-                ConfigData.RenameFiles = settings.RenameFiles;
-            }
+            ConfigData.DataPath = settings.DataPath;
+            ConfigData.ExcelFile = settings.ExcelFile;
+            ConfigData.DeleteFiles = settings.DeleteFiles;
+            ConfigData.RenameFiles = settings.RenameFiles;
         }
         SaveSettings(true);
         txtDataPath.Text = ConfigData.DataPath ?? string.Empty;

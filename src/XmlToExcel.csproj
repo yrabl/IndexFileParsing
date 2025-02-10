@@ -7,6 +7,16 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>YanivRabl.ico</ApplicationIcon>
+    <Title>Ada XML to Excel Converter</Title>
+    <Authors>Yaniv Rabl</Authors>
+    <Company>YDK-Israel.com</Company>
+    <Copyright>Yaniv Rabl 2025 ©</Copyright>
+    <PackageProjectUrl>https://github.com/yrabl/IndexFileParsing</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yrabl/IndexFileParsing.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <SignAssembly>False</SignAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>Yaniv_big.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +31,13 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +64,10 @@
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Yaniv_big.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 

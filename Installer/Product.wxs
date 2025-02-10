@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Ada XML to Excel Converter" Language="1033" Version="1.1.0.0" Manufacturer="YDK-Israel.com" UpgradeCode="004B109B-15F5-43C9-BA9B-09D85913B83D">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+    <Icon Id="AppIcon" SourceFile="..\src\YanivRabl.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon"/>
+
+    <MediaTemplate />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="AdaXmlToExcel">
+          <Component Id="MainExecutable" Guid="A0B260D1-3E79-47FF-B0BA-65C351FEBAB9">
+            <File Id="MainExecutable" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.exe">
+              <Shortcut Id="StartMenuShortcut"
+                        Directory="ProgramMenuDir"
+                        Name="Ada XML to Excel Converter"
+                        WorkingDirectory="INSTALLFOLDER"
+                        Icon="AppIcon"
+                        Advertise="no"/>
+            </File>
+            <RemoveFile Id="RemoveShortcut" Name="Ada XML to Excel Converter.lnk" Directory="ProgramMenuDir" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\AdaXmlToExcel" Name="Installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+
+          <Component Id="Dependencies" Guid="60CDED40-B27A-4372-8DBE-6E4751F97EC9">
+            <File Id="Dll1" Source="..\src\bin\Release\net8.0-windows8.0\EPPlus.dll"/>
+            <File Id="Dll2" Source="..\src\bin\Release\net8.0-windows8.0\EPPlus.Interfaces.dll"/>
+            <File Id="Dll3" Source="..\src\bin\Release\net8.0-windows8.0\EPPlus.System.Drawing.dll"/>
+            <File Id="Dll4" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.Configuration.Abstractions.dll"/>
+            <File Id="Dll5" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.Configuration.dll"/>
+            <File Id="Dll6" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.Configuration.FileExtensions.dll"/>
+            <File Id="Dll7" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.Configuration.Json.dll"/>
+            <File Id="Dll8" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.IO.RecyclableMemoryStream.dll"/>
+            <File Id="Dll9" Source="..\src\bin\Release\net8.0-windows8.0\System.Drawing.Common.dll"/>
+            <File Id="Dll10" Source="..\src\bin\Release\net8.0-windows8.0\System.Security.Cryptography.Pkcs.dll"/>
+            <File Id="ConfigFile" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.runtimeconfig.json"/>
+            <File Id="DepsFile" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.deps.json"/>
+            <File Id="Dll11" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.FileProviders.Abstractions.dll"/>
+            <File Id="Dll12" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.FileProviders.Physical.dll"/>
+            <File Id="Dll13" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.FileSystemGlobbing.dll"/>
+            <File Id="Dll14" Source="..\src\bin\Release\net8.0-windows8.0\Microsoft.Extensions.Primitives.dll"/>
+            <File Id="Dll15" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.dll"/>
+            <File Id="Dll16" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.dll.config"/>
+            <File Id="Dll17" Source="..\src\bin\Release\net8.0-windows8.0\XmlToExcel.pdb"/>
+            <File Id="IconFile" Source="..\src\bin\Release\net8.0-windows8.0\YanivRabl.ico"/>
+          </Component>
+          <Directory Id="LangEnDir" Name="en">
+            <Component Id="LangEn" Guid="72BC431D-C2B5-4F73-B005-A50CA370D3D4">
+              <File Id="LangEnFile" Source="..\src\bin\Release\net8.0-windows8.0\en\XmlToExcel.resources.dll" ShortName="Res_EN.dll"/>
+            </Component>
+          </Directory>
+          <Directory Id="LangHeDir" Name="he">
+            <Component Id="LangHe" Guid="2F3F0F2E-A2DF-405B-ABA6-C9C4358563A3">
+              <File Id="LangHeFile" Source="..\src\bin\Release\net8.0-windows8.0\he\XmlToExcel.resources.dll" ShortName="Res_HE.dll"/>
+            </Component>
+          </Directory>
+
+          <Component Id="UserSettings" Guid="FF426CFF-8E79-453A-B618-AAD193220F99">
+            <RegistryValue Root="HKCU" Key="Software\AdaXmlToExcel" Name="Installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="Ada XML to Excel Converter"/>
+      </Directory>
+    </Directory>
+
+    <Feature Id="MainFeature" Title="Ada XML to Excel" Level="1">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentRef Id="Dependencies"/>
+      <ComponentRef Id="LangEn"/>
+      <ComponentRef Id="LangHe"/>
+      <ComponentRef Id="UserSettings"/>
+      <ComponentRef Id="ProgramMenuComponent"/>
+    </Feature>
+  </Product>
+  <Fragment>
+    <DirectoryRef Id="ProgramMenuDir">
+      <Component Id="ProgramMenuComponent" Guid="0F19A650-9C09-4453-9265-A566BE16AE9B">
+        <RemoveFolder Id="RemoveStartMenuFolder" Directory="ProgramMenuDir" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\AdaXmlToExcel" Name="StartMenuEntry" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>
